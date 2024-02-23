@@ -9,7 +9,13 @@ namespace blog_BackEnd.Data
         {
         }
 
-        public DbSet<Post> posts {get; set;}
-        public DbSet<Comments> comments {get; set;}
+        public DbSet<Post> Posts {get; set;}
+        public DbSet<Comments> Comments {get; set;}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
+        }
     }
 }
