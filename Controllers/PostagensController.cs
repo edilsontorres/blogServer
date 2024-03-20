@@ -35,8 +35,16 @@ namespace blog.Controllers
         }
 
         [HttpPost("novapostagem")]
-        public async Task<ActionResult<Post>> NewPost([FromBody] Post posts)
+        public async Task<ActionResult<Post>> NewPost([FromForm] Post posts, [FromForm] IFormFile? img)
         {
+            if (img != null)
+            {
+                var path = Path.Combine("ImgData", img.FileName);
+                using Stream stream = new FileStream(path, FileMode.Create);
+                img.CopyTo(stream);
+                posts.CoverImg = path;   
+            }
+
             _context.Add(posts);
             await _context.SaveChangesAsync();
             return Ok(201);

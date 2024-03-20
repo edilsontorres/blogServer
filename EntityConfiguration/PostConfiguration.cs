@@ -23,6 +23,10 @@ namespace blog_BackEnd.EntityConfiguration
             .HasColumnType("VARCHAR(80)")
             .IsRequired();
 
+            builder.Property(p => p.CoverImg)
+            .HasColumnType("VARCHAR(255)")
+            .HasDefaultValue(null);
+
         }
     }
 }
