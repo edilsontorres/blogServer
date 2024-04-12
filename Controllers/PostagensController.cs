@@ -2,6 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using blog_BackEnd.Data;
 using Microsoft.EntityFrameworkCore;
 using blog_BackEnd.Entites;
+using System;
+using System.Web;
+using System.IO;
+
+
 
 namespace blog.Controllers
 {
@@ -44,6 +49,9 @@ namespace blog.Controllers
                 img.CopyTo(stream);
                 posts.CoverImg = path;   
             }
+            
+            var teste = HttpUtility.HtmlEncode(posts.Content);
+            posts.Content = teste;
 
             _context.Add(posts);
             await _context.SaveChangesAsync();
