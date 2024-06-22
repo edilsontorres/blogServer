@@ -50,8 +50,8 @@ namespace blog.Controllers
                 posts.CoverImg = path;   
             }
             
-            var teste = HttpUtility.HtmlEncode(posts.Content);
-            posts.Content = teste;
+            // var teste = HttpUtility.HtmlEncode(posts.Content);
+            // posts.Content = teste;
 
             _context.Add(posts);
             await _context.SaveChangesAsync();

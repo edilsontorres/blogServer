@@ -15,11 +15,11 @@ namespace blog_BackEnd.EntityConfiguration
             .HasColumnType("VARCHAR(80)")
             .IsRequired();
 
-             builder.Property(p => p.Content)
+            builder.Property(p => p.Content)
             .HasColumnType("VARCHAR(255)")
             .IsRequired();
 
-             builder.Property(p => p.Author)
+            builder.Property(p => p.Author)
             .HasColumnType("VARCHAR(80)")
             .IsRequired();
 
