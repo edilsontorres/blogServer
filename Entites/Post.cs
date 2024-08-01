@@ -1,3 +1,5 @@
+
+
 namespace blog_BackEnd.Entites
 {
     public class Post
@@ -7,6 +9,8 @@ namespace blog_BackEnd.Entites
         public string? Content {get; set;}
         public string? Author{get;set;}
         public string? CoverImg { get; set; }
-
+        public DateTime CreatedAt {get; set;} = DateTime.Now;
+        public DateTime LastDateUpdate {get; set;} = DateTime.Now;
+        
     }
 }

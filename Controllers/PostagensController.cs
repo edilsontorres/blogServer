@@ -58,6 +58,23 @@ namespace blog.Controllers
             return Ok(201);
         }
 
+        [HttpGet("foto/{id}")]
+        public async Task<ActionResult> Photo([FromRoute]int id)
+        {
+            var idPost = await _context.Posts.FindAsync(id);
+
+            if(idPost != null && idPost.CoverImg != null)
+            {
+                var idPhotoByte = System.IO.File.ReadAllBytes(idPost.CoverImg);
+                return File(idPhotoByte, "image/png");
+            
+            }
+
+            return BadRequest("Algo deu errado");
+
+            
+        }
+
         [HttpPut("editarpostagem/{id}")]
         public async Task<ActionResult> ToEdit([FromRoute]int id, [FromBody] Post posts)
         {
