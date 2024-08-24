@@ -28,10 +28,10 @@ namespace blog.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> ListPostById([FromRoute]int id)
+        public async Task<ActionResult<Post>> ListPostById([FromRoute] int id)
         {
             var idPost = await _context.Posts.FindAsync(id);
-            if(idPost != null)
+            if (idPost != null)
             {
                 return Ok(idPost);
             }
@@ -47,9 +47,9 @@ namespace blog.Controllers
                 var path = Path.Combine("ImgData", img.FileName);
                 using Stream stream = new FileStream(path, FileMode.Create);
                 img.CopyTo(stream);
-                posts.CoverImg = path;   
+                posts.CoverImg = path;
             }
-            
+
             // var teste = HttpUtility.HtmlEncode(posts.Content);
             // posts.Content = teste;
 
@@ -59,45 +59,57 @@ namespace blog.Controllers
         }
 
         [HttpGet("foto/{id}")]
-        public async Task<ActionResult> Photo([FromRoute]int id)
+        public async Task<ActionResult> Photo([FromRoute] int id)
         {
             var idPost = await _context.Posts.FindAsync(id);
 
-            if(idPost != null && idPost.CoverImg != null)
+            if (idPost != null && idPost.CoverImg != null)
             {
                 var idPhotoByte = System.IO.File.ReadAllBytes(idPost.CoverImg);
                 return File(idPhotoByte, "image/png");
-            
+
             }
 
             return BadRequest("Algo deu errado");
 
-            
         }
 
         [HttpPut("editarpostagem/{id}")]
-        public async Task<ActionResult> ToEdit([FromRoute]int id, [FromBody] Post posts)
+        public async Task<ActionResult> ToEdit([FromRoute] int id, [FromForm] Post posts, [FromForm] IFormFile img)
         {
             var idPost = await _context.Posts.FindAsync(id);
-            if(idPost != null)
+            if (idPost != null)
             {
-                idPost.Title = posts.Title;
-                idPost.Content = posts.Content;
-                idPost.Author = posts.Author;
 
-                _context.Posts.Update(idPost);
-                await _context.SaveChangesAsync();
-                return Ok("Dados atualizado com sucesso!");
+                if (img != null)
+                {
+                    var path = Path.Combine("ImgData", img.FileName);
+                    using Stream stream = new FileStream(path, FileMode.Create);
+                    img.CopyTo(stream);
+                    posts.CoverImg = path;
+
+                    idPost.Title = posts.Title;
+                    idPost.Content = posts.Content;
+                    idPost.Author = posts.Author;
+                    idPost.CoverImg = posts.CoverImg;
+
+                    _context.Posts.Update(idPost);
+                    await _context.SaveChangesAsync();
+                    return Ok("Dados atualizado com sucesso!");
+                }
+
             }
 
             return BadRequest("Erro ao indexar postagem");
+
+
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> RemovePost([FromRoute]int id)
+        public async Task<ActionResult> RemovePost([FromRoute] int id)
         {
             var idPost = await _context.Posts.FindAsync(id);
-            if(idPost != null)
+            if (idPost != null)
             {
                 _context.Posts.Remove(idPost);
                 await _context.SaveChangesAsync();
@@ -107,6 +119,6 @@ namespace blog.Controllers
             return BadRequest("Sem reultados para pesquisa");
         }
 
-        
+
     }
 }
