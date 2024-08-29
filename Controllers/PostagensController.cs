@@ -20,11 +20,13 @@ namespace blog.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> ListAll()
+        [HttpGet("page={skip},take={take}")]
+        public async Task<ActionResult> ListAll([FromRoute] int skip, [FromRoute] int take)
         {
-            var posts = await _context.Posts.ToListAsync();
+            var total = await _context.Posts.CountAsync();
+            var posts = await _context.Posts.Skip(skip).Take(take).ToListAsync();
             return Ok(posts);
+            
         }
 
         [HttpGet("{id}")]
@@ -92,6 +94,7 @@ namespace blog.Controllers
                     idPost.Content = posts.Content;
                     idPost.Author = posts.Author;
                     idPost.CoverImg = posts.CoverImg;
+                    idPost.LastDateUpdate = DateTime.Now;
 
                     _context.Posts.Update(idPost);
                     await _context.SaveChangesAsync();
