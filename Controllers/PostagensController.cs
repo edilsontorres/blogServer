@@ -20,12 +20,21 @@ namespace blog.Controllers
             _context = context;
         }
 
-        [HttpGet("page={skip},take={take}")]
-        public async Task<ActionResult> ListAll([FromRoute] int skip, [FromRoute] int take)
+        [HttpGet("{skip:int?}/{take:int?}")]
+        public async Task<ActionResult> ListAll([FromRoute] int skip = 0, [FromRoute] int take = 6)
         {
-            var total = await _context.Posts.CountAsync();
-            var posts = await _context.Posts.Skip(skip).Take(take).ToListAsync();
-            return Ok(posts);
+            if(take <= 25)
+            {
+                var total = await _context.Posts.CountAsync();
+                var posts = await _context.Posts.Skip(skip).Take(take).ToListAsync();
+                var data = new {
+                    total,
+                    posts
+                };
+                return Ok(data);
+            }
+
+            return BadRequest();
             
         }
 
