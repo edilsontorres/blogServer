@@ -60,11 +60,17 @@ namespace blog.Migrations
                     b.Property<DateTime>("LastDateUpdate")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Slug")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("VARCHAR(80)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.ToTable("Posts", (string)null);
                 });

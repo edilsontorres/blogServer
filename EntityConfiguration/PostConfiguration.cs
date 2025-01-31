@@ -11,6 +11,9 @@ namespace blog_BackEnd.EntityConfiguration
             builder.ToTable("Posts");
             builder.HasKey(p => p.Id);
 
+            builder.HasIndex(p => p.Slug)
+            .IsUnique(true);
+
             builder.Property(p => p.Title)
             .HasColumnType("VARCHAR(80)")
             .IsRequired();
