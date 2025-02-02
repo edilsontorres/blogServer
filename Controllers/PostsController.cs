@@ -23,32 +23,27 @@ namespace blog.Controllers
             _slug = slug;
         }
 
-        [HttpGet()]
-        public async Task<ActionResult<Post>> List()
+        [HttpGet("list")]
+        public async Task<ActionResult<Post>> List([FromQuery] int page = 1, [FromQuery] int size = 6)
         {
-            var data = await _context.Posts.ToListAsync();
-            return Ok(data);
+            var total = await _context.Posts.CountAsync();
+            var data = await _context.Posts
+            .OrderByDescending(p => p.CreatedAt)
+            .Skip((page - 1) * size)
+            .Take(size)
+            .ToListAsync();
+
+            var response = new
+            {
+                TotalPosts = total,
+                Page = page,
+                PageSize = size,
+                TotalPages = (int)Math.Ceiling(total / (double)size),
+                Data = data
+            };
+
+            return Ok(response);
         }
-
-        //rota que vai fazer a paginação
-        // [HttpGet("{skip:int?}/{take:int?}")]
-        // public async Task<ActionResult> ListAll([FromRoute] int skip = 0, [FromRoute] int take = 20)
-        // {
-        //     if (take <= 25)
-        //     {
-        //         var total = await _context.Posts.CountAsync();
-        //         var posts = await _context.Posts.Skip(skip).Take(take).ToListAsync();
-        //         var data = new
-        //         {
-        //             total,
-        //             posts
-        //         };
-        //         return Ok(data);
-        //     }
-
-        //     return BadRequest();
-
-        // }
 
         [HttpGet("{slug}")]
         public async Task<ActionResult<Post>> ListPostById([FromRoute] string slug)
@@ -72,7 +67,7 @@ namespace blog.Controllers
                 img.CopyTo(stream);
                 posts.CoverImg = path;
                 var slugUnique = _slug.GerarIdentificadorUnico(posts.Title);
-                var finalTitle  = posts.Title.Replace(" ", "-");
+                var finalTitle = posts.Title.Replace(" ", "-");
                 var lowerSlug = finalTitle.ToLower();
                 var finalSlug = $"{lowerSlug}-{slugUnique}";
                 posts.Slug = finalSlug;
