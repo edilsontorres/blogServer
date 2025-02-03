@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using blog_BackEnd.Entites;
 using Microsoft.IdentityModel.Tokens;
 
 namespace blogServer.Service.JwtService
@@ -21,14 +22,14 @@ namespace blogServer.Service.JwtService
             _audience = config["JwtSettings:Audience"];
         }
 
-        public string GenerateToken(string userId)
+        public string GenerateToken(User user)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userId),
+                new Claim(JwtRegisteredClaimNames.Sub, user.NameUser!),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

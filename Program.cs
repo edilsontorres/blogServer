@@ -1,6 +1,7 @@
 using System.Text;
 using blog_BackEnd.Data;
 using blog_BackEnd.Service;
+using blogServer.Service.JwtService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -16,11 +17,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<Slug>();
+builder.Services.AddScoped<JwtService>(); 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(opt =>
 {
     var config = builder.Configuration;
-    
+    var secretKey = config["JwtSettings:SecretKey"] 
+    ?? throw new ArgumentNullException("JwtSettings:SecretKey", "A chave secreta do JWT não pode ser nula");
+
     opt.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -29,7 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateIssuerSigningKey = true,
         ValidIssuer = config["JwtSettings:Issuer"],
         ValidAudience = config["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:SecretKey"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
 
     };
 });
@@ -61,8 +65,6 @@ app.UseStaticFiles(new StaticFileOptions
         Path.Combine(Directory.GetCurrentDirectory(), "ImgData")),
     RequestPath = "/ImgData"
 });
-
-app.UseAuthorization();
 
 app.MapControllers();
 

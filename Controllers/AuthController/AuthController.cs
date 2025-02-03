@@ -1,30 +1,38 @@
+using System.Threading.Tasks;
+using blog_BackEnd.Data;
+using blog_BackEnd.Entites;
 using blogServer.Service.JwtService;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace blogServer.Controllers.AuthController
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly JwtService _jwtService;
+        private readonly DataContext _context;
 
-        public AuthController(JwtService jwtService)
+        public AuthController(JwtService jwtService, DataContext context)
         {
             _jwtService = jwtService;
+            _context = context;
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] User user)
         {
-            // Simulação de usuário válido (substituir por lógica real)
-            // if (request.Username == "admin" && request.Password == "123456")
-            // {
-            //     var token = _jwtService.GenerateToken("1"); // ID do usuário
-            //     return Ok(new { Token = token });
-            // }
+           
+            var userRepository = await _context.Users
+            .FirstOrDefaultAsync(u => u.NameUser == user.NameUser);
 
+            if(userRepository != null)
+            {
+                var token = _jwtService.GenerateToken(userRepository);
+                return Ok(new { Token = token });
+            }
             return Unauthorized("Credenciais inválidas.");
+            
         }
 
     }

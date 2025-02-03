@@ -2,10 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using blog_BackEnd.Data;
 using Microsoft.EntityFrameworkCore;
 using blog_BackEnd.Entites;
-using System;
-using System.Web;
-using System.IO;
 using blog_BackEnd.Service;
+using Microsoft.AspNetCore.Authorization;
 
 
 
@@ -57,6 +55,7 @@ namespace blog.Controllers
             return BadRequest("Sem reultados para pesquisa");
         }
 
+        [Authorize]
         [HttpPost("novopost")]
         public async Task<ActionResult<Post>> NewPost([FromForm] Post posts, [FromForm] IFormFile? img)
         {
@@ -113,6 +112,7 @@ namespace blog.Controllers
             return BadRequest("deu erro");
         }
 
+        [Authorize]
         [HttpPut("editarpostagem/{id}")]
         public async Task<ActionResult> ToEdit([FromRoute] int id, [FromForm] Post posts, [FromForm] IFormFile img)
         {
@@ -145,6 +145,7 @@ namespace blog.Controllers
 
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> RemovePost([FromRoute] int id)
         {
