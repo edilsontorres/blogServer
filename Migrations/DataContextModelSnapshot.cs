@@ -81,6 +81,9 @@ namespace blog.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("NameUser")
                         .IsRequired()
                         .HasColumnType("VARCHAR(80)");

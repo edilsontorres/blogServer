@@ -88,7 +88,6 @@ namespace blog.Controllers
             {
                 var file = idPost.CoverImg;
                 var fileUrl = $"{Request.Scheme}://{Request.Host}/{file}";
-                Console.WriteLine(fileUrl);
                 return Ok(new { link = fileUrl });
 
             }

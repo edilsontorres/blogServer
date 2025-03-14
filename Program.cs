@@ -66,6 +66,13 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/ImgData"
 });
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Avatar")),
+    RequestPath = "/Avatar"
+});
+
 app.MapControllers();
 
 app.UseCors(opt =>
